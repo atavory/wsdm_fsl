@@ -7,6 +7,7 @@ submission evidence bundle.
 
 The package includes:
 
+- `score/`: public score-learning runners for the ten yield-Gini datasets.
 - `w16/export_cas_rda_to_csv.py`: converts CASdatasets `.rda` data frames to
   CSV without requiring an R runtime.
 - `w16/w16_candidates.py`: generates candidate-level W16 logs for Australian
@@ -24,7 +25,7 @@ Supply local copies of the public datasets when running the scripts.
 
 ## Environment
 
-Install the pinned public dependencies:
+Install the public dependencies:
 
 ```bash
 python3 -m venv .venv
@@ -33,6 +34,10 @@ python -m pip install -r requirements.txt
 ```
 
 ## Run
+
+Score-learning runners live under `score/`.  Each script exposes its input and
+output arguments through `--help`; generated CSVs should stay in a local output
+directory and are not committed here.
 
 Export CASdatasets inputs when needed:
 
