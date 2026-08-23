@@ -1,80 +1,77 @@
-# W16 Public Commands
+# W16 Public Runner Commands
 
-## Combined Run
+The public runner writes candidate-level CSVs.  The paper's frozen CSVs,
+deterministic aggregators, and plotting scripts live in the submission evidence
+bundle.
 
-The combined runner trains the candidate generators and runs the deterministic
-summaries:
+## CASdatasets Inputs
+
+Convert each CASdatasets `.rda` file to CSV:
 
 ```bash
-python w16/run_w16_gpu.py \
-  --australian-rda <path/to/ausprivauto0405.rda> \
-  --belgian-rda <path/to/beMTPL97.rda> \
-  --kuairand-dir <local KuaiRand-Pure/data path materialized from the public source> \
-  --output-dir <run output dir> \
-  --device cuda:0 \
-  --seeds <N> \
-  --epochs <N> \
-  --lambda-grid-points 41
+python w16/export_cas_rda_to_csv.py \
+  --input <path/to/ausprivauto0405.rda> \
+  --output <path/to/ausprivauto0405.csv>
+
+python w16/export_cas_rda_to_csv.py \
+  --input <path/to/beMTPL97.rda> \
+  --output <path/to/beMTPL97.csv>
 ```
 
-Record the exact command, Git commit, pinned requirements, raw input source URLs
-and hashes, output CSV paths, and output CSV checksums.
-
-## KuaiRand Commands
-
-These commands run KuaiRand candidate generation and summarization directly.
+Generate Australian MTPL candidate logs, including the constructed stress
+cohorts:
 
 ```bash
-python w16/w16_kuairand_torch_gpu.py \
-  --input-dir <KuaiRand-Pure/data> \
-  --max-rows 300000 \
-  --seeds 50 \
-  --epochs 8 \
-  --batch-size 8192 \
-  --device cuda:0 \
-  --output w16_kuairand_300k_seed50_candidates.csv
-
-python w16/summarize_w16_boundary_fast.py \
-  --input w16_kuairand_300k_seed50_candidates.csv \
-  --output w16_kuairand_300k_seed50_summary.csv \
-  --lambda-grid-points 41
-
-python w16/w16_kuairand_torch_gpu.py \
-  --input-dir <KuaiRand-Pure/data> \
-  --max-rows 0 \
+python w16/w16_candidates.py \
+  --dataset australian_mtpl \
+  --input <path/to/ausprivauto0405.csv> \
+  --dataset-scope all \
   --seeds 10 \
-  --epochs 8 \
-  --batch-size 8192 \
-  --device cuda:0 \
-  --output w16_kuairand_full_seed10_candidates.csv
-
-python w16/summarize_w16_boundary_fast.py \
-  --input w16_kuairand_full_seed10_candidates.csv \
-  --output w16_kuairand_full_seed10_summary.csv \
-  --lambda-grid-points 41
+  --epochs 20 \
+  --batch-size 256 \
+  --targets 0.1 \
+  --net-lambda 1.0 \
+  --floor-quantile 0.05 \
+  --output <output-dir>/wsdm_fairness_boundary_candidates.csv
 ```
 
-Keep `--lambda-grid-points 41` when reproducing the reported grid summaries.
-
-## CAS Commands
-
-These commands run Australian and Belgian CASdatasets candidate generation and
-summarization directly.
+Generate Belgian MTPL candidate logs:
 
 ```bash
-python w16/w16_cas_torch_gpu.py \
-  --australian-rda <ausprivauto0405.rda> \
-  --belgian-rda <beMTPL97.rda> \
-  --datasets australian,belgian \
-  --belgian-n 100000 \
-  --seeds <N> \
-  --epochs 8 \
-  --batch-size 4096 \
-  --device cuda:0 \
-  --output w16_cas_torch_gpu_candidates.csv
-
-python w16/summarize_w16_boundary_fast.py \
-  --input w16_cas_torch_gpu_candidates.csv \
-  --output w16_cas_torch_gpu_summary.csv \
-  --lambda-grid-points 41
+python w16/w16_candidates.py \
+  --dataset belgian_mtpl \
+  --input <path/to/beMTPL97.csv> \
+  --dataset-scope natural \
+  --seeds 10 \
+  --epochs 20 \
+  --batch-size 256 \
+  --targets 0.1 \
+  --net-lambda 1.0 \
+  --floor-quantile 0.05 \
+  --output <output-dir>/wsdm_fairness_boundary_candidates_belgian.csv
 ```
+
+## KuaiRand-Pure Input
+
+Use the extracted KuaiRand-Pure `data` directory containing
+`log_random_4_22_to_5_08_pure.csv`, `user_features_pure.csv`, and
+`video_features_basic_pure.csv`.
+
+```bash
+python w16/w16_candidates.py \
+  --dataset kuairand \
+  --input <path/to/KuaiRand-Pure/data> \
+  --max-rows 300000 \
+  --sample-seed 42 \
+  --seeds 10 \
+  --epochs 20 \
+  --batch-size 512 \
+  --targets 0.1 \
+  --dataset-scope natural \
+  --net-lambda 0.0001642368368238962 \
+  --floor-quantile 0.05 \
+  --output <output-dir>/wsdm_fairness_boundary_candidates_kuairand_300k.csv
+```
+
+For parallel runs, split seeds with `--seed-start` and `--seeds`, then combine
+the shard CSVs by keeping one header.
