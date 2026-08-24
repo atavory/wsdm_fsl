@@ -68,7 +68,7 @@ python w16/w16_candidates.py \
   --batch-size 512 \
   --targets 0.1 \
   --dataset-scope natural \
-  --net-lambda 0.0001642368368238962 \
+  --net-lambda 1.0 \
   --floor-quantile 0.05 \
   --output <output-dir>/wsdm_fairness_boundary_candidates_kuairand_300k.csv
 ```
