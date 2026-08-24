@@ -1,4 +1,4 @@
-# W16 Public Runner Commands
+# Fairness Runner Commands
 
 The public runner writes candidate-level CSVs.  The paper's frozen CSVs,
 deterministic aggregators, and plotting scripts live in the submission evidence
@@ -9,11 +9,11 @@ bundle.
 Convert each CASdatasets `.rda` file to CSV:
 
 ```bash
-python w16/export_cas_rda_to_csv.py \
+python fairness/export_cas_rda_to_csv.py \
   --input <path/to/ausprivauto0405.rda> \
   --output <path/to/ausprivauto0405.csv>
 
-python w16/export_cas_rda_to_csv.py \
+python fairness/export_cas_rda_to_csv.py \
   --input <path/to/beMTPL97.rda> \
   --output <path/to/beMTPL97.csv>
 ```
@@ -22,7 +22,7 @@ Generate Australian MTPL candidate logs, including the constructed stress
 cohorts:
 
 ```bash
-python w16/w16_candidates.py \
+python fairness/fairness_candidates.py \
   --dataset australian_mtpl \
   --input <path/to/ausprivauto0405.csv> \
   --dataset-scope all \
@@ -38,7 +38,7 @@ python w16/w16_candidates.py \
 Generate Belgian MTPL candidate logs:
 
 ```bash
-python w16/w16_candidates.py \
+python fairness/fairness_candidates.py \
   --dataset belgian_mtpl \
   --input <path/to/beMTPL97.csv> \
   --dataset-scope natural \
@@ -58,7 +58,7 @@ Use the extracted KuaiRand-Pure `data` directory containing
 `video_features_basic_pure.csv`.
 
 ```bash
-python w16/w16_candidates.py \
+python fairness/fairness_candidates.py \
   --dataset kuairand \
   --input <path/to/KuaiRand-Pure/data> \
   --max-rows 300000 \

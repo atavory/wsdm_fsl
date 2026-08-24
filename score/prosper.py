@@ -1,4 +1,4 @@
-"""Evaluate risk ranking on resolved SBA 7(a) loans from the FOIA export."""
+"""Resolved Prosper loans with paper A=good value and B=bad loss."""
 
 from __future__ import annotations
 
@@ -18,44 +18,42 @@ from wsdm_baselines import metrics, run_method
 
 
 NUMERIC = [
-    "GrossApproval", "SBAGuaranteedApproval", "ApprovalFiscalYear",
-    "InitialInterestRate", "TermInMonths", "JobsSupported",
+    "Term", "BorrowerAPR", "BorrowerRate", "EmploymentStatusDuration",
+    "CreditScoreRangeLower", "CreditScoreRangeUpper", "CurrentCreditLines",
+    "OpenCreditLines", "TotalCreditLinespast7years",
+    "OpenRevolvingAccounts", "OpenRevolvingMonthlyPayment",
+    "InquiriesLast6Months", "TotalInquiries", "CurrentDelinquencies",
+    "AmountDelinquent", "DelinquenciesLast7Years",
+    "PublicRecordsLast10Years", "PublicRecordsLast12Months",
+    "RevolvingCreditBalance", "BankcardUtilization",
+    "AvailableBankcardCredit", "TotalTrades",
+    "TradesNeverDelinquent (percentage)", "TradesOpenedLast6Months",
+    "DebtToIncomeRatio", "StatedMonthlyIncome", "TotalProsperLoans",
+    "ProsperPrincipalBorrowed", "LoanOriginalAmount", "MonthlyLoanPayment",
 ]
 CATEGORICAL = [
-    "DeliveryMethod", "subpgmdesc", "BorrState", "BankState",
-    "ProjectState", "BusinessType", "RevolverStatus", "NaicsSector",
-    "HasFranchise",
+    "ListingCategory (numeric)", "BorrowerState", "Occupation",
+    "EmploymentStatus", "IsBorrowerHomeowner", "IncomeRange",
+    "IncomeVerifiable",
 ]
-READCOLS = NUMERIC + [
-    "LoanStatus", "GrossChargeOffAmount", "NaicsCode", "FranchiseCode",
-] + [c for c in CATEGORICAL if c not in {"NaicsSector", "HasFranchise"}]
+OUTCOMES = ["LoanStatus", "LP_NetPrincipalLoss", "LP_InterestandFees"]
+RESOLVED = {"Completed", "Chargedoff", "Defaulted"}
 
 
-def load_data(path: str, n: int, seed: int):
-    frame = pd.read_csv(path, usecols=READCOLS, low_memory=False)
-    frame = frame[frame["LoanStatus"].isin(["PIF", "CHGOFF"])].reset_index(drop=True)
-    loss = frame["GrossChargeOffAmount"].clip(lower=0).fillna(0)
-    approval = frame["GrossApproval"].clip(lower=0).fillna(0)
-    recovered = (approval - loss).clip(lower=0)
+def load_data(path: str):
+    frame = pd.read_csv(path, usecols=NUMERIC + CATEGORICAL + OUTCOMES, low_memory=False)
+    frame = frame[frame["LoanStatus"].isin(RESOLVED)].reset_index(drop=True)
+    loss = frame["LP_NetPrincipalLoss"].clip(lower=0).fillna(0).to_numpy(dtype=np.float32)
+    realized_return = frame["LP_InterestandFees"].clip(lower=0).fillna(0).to_numpy(dtype=np.float32)
     label = (loss > 0).astype(np.float32)
-    valid = (approval > 0) & (loss + recovered > 0)
-    frame = frame.loc[valid].reset_index(drop=True)
-    loss = loss.loc[valid].to_numpy(dtype=np.float32)
-    recovered = recovered.loc[valid].to_numpy(dtype=np.float32)
-    label = label.loc[valid].to_numpy(dtype=np.float32)
-
-    naics = pd.to_numeric(frame["NaicsCode"], errors="coerce").fillna(0).astype(int)
-    frame["NaicsSector"] = (naics // 10_000).astype(str)
-    franchise = pd.to_numeric(frame["FranchiseCode"], errors="coerce").fillna(0)
-    frame["HasFranchise"] = (franchise > 0).astype(str)
-
-    if n < len(frame):
-        idx, _ = train_test_split(
-            np.arange(len(frame)), train_size=n, random_state=seed, stratify=label
-        )
-        frame = frame.iloc[idx].reset_index(drop=True)
-        loss, recovered, label = loss[idx], recovered[idx], label[idx]
-    return frame[NUMERIC + CATEGORICAL], label, loss, recovered
+    realized_return = realized_return * (1.0 - label)
+    valid = loss + realized_return > 0
+    return (
+        frame.loc[valid, NUMERIC + CATEGORICAL].reset_index(drop=True),
+        label[valid],
+        loss[valid],
+        realized_return[valid],
+    )
 
 
 def transform_split(frame, train_idx, test_idx):
@@ -82,21 +80,20 @@ def transform_split(frame, train_idx, test_idx):
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", required=True)
-    parser.add_argument("--n", type=int, default=100_000)
     parser.add_argument("--seeds", type=int, default=10)
     parser.add_argument("--epochs", type=int, default=20)
     parser.add_argument("--batch-size", type=int, default=256)
     parser.add_argument("--pairs-per-batch", type=int, default=2048)
-    parser.add_argument("--output", default="results/csvs/icaif_sba.csv")
+    parser.add_argument("--output", default="results/csvs/prosper.csv")
     return parser.parse_args()
 
 
 if __name__ == "__main__":
     args = parse_args()
-    frame, label, loss, recovered = load_data(args.input, args.n, 42)
+    frame, label, loss, realized_return = load_data(args.input)
     print(
-        f"resolved sample={len(frame)} chargeoff-rate={label.mean():.4f} "
-        f"loss_sum={loss.sum():.2f} recovered_sum={recovered.sum():.2f}",
+        f"resolved={len(frame)} loss-positive={label.mean():.4f} "
+        f"loss_sum={loss.sum():.2f} return_sum={realized_return.sum():.2f}",
         flush=True,
     )
     methods = [
@@ -113,18 +110,18 @@ if __name__ == "__main__":
         for method in methods:
             started = time.perf_counter()
             scores = run_method(
-                method, x_train, x_test, loss[train_idx], recovered[train_idx],
-                label[train_idx], 40_000 + seed, args.epochs, args.batch_size,
-                args.pairs_per_batch,
+                method, x_train, x_test, loss[train_idx],
+                realized_return[train_idx], label[train_idx], 30_000 + seed,
+                args.epochs, args.batch_size, args.pairs_per_batch,
             )
             row = {
-                "dataset": "SBA-7a-FY2000-2009",
+                "dataset": "Prosper-resolved",
                 "seed": seed,
                 "method": method,
                 "n": len(frame),
                 "loss_rate": float(label.mean()),
                 "seconds": time.perf_counter() - started,
-                **metrics(scores, loss[test_idx], recovered[test_idx]),
+                **metrics(scores, loss[test_idx], realized_return[test_idx]),
             }
             rows.append(row)
             print(row, flush=True)

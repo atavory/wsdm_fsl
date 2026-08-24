@@ -8,9 +8,9 @@ submission evidence bundle.
 The package includes:
 
 - `score/`: public score-learning runners for the ten yield-Gini datasets.
-- `w16/export_cas_rda_to_csv.py`: converts CASdatasets `.rda` data frames to
+- `fairness/export_cas_rda_to_csv.py`: converts CASdatasets `.rda` data frames to
   CSV without requiring an R runtime.
-- `w16/w16_candidates.py`: generates candidate-level W16 logs for Australian
+- `fairness/fairness_candidates.py`: generates candidate-level fairness logs for Australian
   MTPL, Belgian MTPL, and KuaiRand-Pure.
 
 Supply local copies of the public datasets when running the scripts.
@@ -42,7 +42,7 @@ directory and are not committed here.
 Export CASdatasets inputs when needed:
 
 ```bash
-python w16/export_cas_rda_to_csv.py \
+python fairness/export_cas_rda_to_csv.py \
   --input <path/to/ausprivauto0405.rda> \
   --output <path/to/ausprivauto0405.csv>
 ```
@@ -50,7 +50,7 @@ python w16/export_cas_rda_to_csv.py \
 Generate candidate-level logs:
 
 ```bash
-python w16/w16_candidates.py \
+python fairness/fairness_candidates.py \
   --dataset australian_mtpl \
   --input <path/to/ausprivauto0405.csv> \
   --dataset-scope all \
@@ -60,6 +60,6 @@ python w16/w16_candidates.py \
   --output <output-dir>/australian_candidates.csv
 ```
 
-See `w16/RUN_COMMANDS.md` for Belgian MTPL and KuaiRand examples.  Save the Git
+See `fairness/RUN_COMMANDS.md` for Belgian MTPL and KuaiRand examples.  Save the Git
 commit, exact command, pinned requirements, raw input source URLs, raw input
 hashes, generated CSV paths, and CSV checksums with any run.

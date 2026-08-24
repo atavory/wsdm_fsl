@@ -108,7 +108,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--epochs", type=int, default=20)
     parser.add_argument("--batch-size", type=int, default=256)
     parser.add_argument("--pairs-per-batch", type=int, default=2048)
-    parser.add_argument("--output", default="results/csvs/icaif_lending_club.csv")
+    parser.add_argument("--output", default="results/csvs/lending_club.csv")
     return parser.parse_args()
 
 

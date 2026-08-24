@@ -1,4 +1,4 @@
-"""Log candidate-level decisions for the W16 criterion-disagreement experiment."""
+"""Log candidate-level decisions for the fairness experiments."""
 
 from __future__ import annotations
 
@@ -337,7 +337,7 @@ def read_csv_input(path: str, dataset: str) -> pd.DataFrame:
     lowered = path.lower()
     if not lowered.endswith((".csv", ".csv.gz")):
         raise RuntimeError(
-            f"Buck W16 {dataset} runs require a concrete CSV input."
+            f"Fairness runs for {dataset} require a concrete CSV input."
         )
     return pd.read_csv(path)
 

@@ -29,7 +29,7 @@ def read_ausprivauto(path: str) -> pd.DataFrame:
     except ModuleNotFoundError as error:
         raise RuntimeError(
             "RData input requires pyreadr. Use a CSV export of ausprivauto0405 "
-            "when running through Buck."
+            "when running this script."
         ) from error
     return pyreadr.read_r(path)["ausprivauto0405"]
 
@@ -98,7 +98,7 @@ def parse_args():
     parser.add_argument("--batch-size", type=int, default=256)
     parser.add_argument("--pairs-per-batch", type=int, default=2048)
     parser.add_argument(
-        "--output", default="results/csvs/icaif_australian_mtpl_nested.csv"
+        "--output", default="results/csvs/australian_mtpl_nested.csv"
     )
     return parser.parse_args()
 

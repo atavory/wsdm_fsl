@@ -86,7 +86,7 @@ def parse_args():
     parser.add_argument("--epochs", type=int, default=20)
     parser.add_argument("--batch-size", type=int, default=256)
     parser.add_argument("--pairs-per-batch", type=int, default=2048)
-    parser.add_argument("--output", default="results/csvs/icaif_bondora.csv")
+    parser.add_argument("--output", default="results/csvs/bondora.csv")
     return parser.parse_args()
 
 

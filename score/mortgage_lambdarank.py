@@ -13,7 +13,7 @@ import xgboost as xgb
 from sklearn.model_selection import train_test_split
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from icaif_mortgage_nested import (
+from mortgage_nested import (
     FANNIE_CATEGORICAL,
     FANNIE_NUMERIC,
     FREDDIE_CATEGORICAL,
