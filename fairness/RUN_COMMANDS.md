@@ -4,6 +4,39 @@ The public runner writes candidate-level CSVs.  The paper's frozen CSVs,
 deterministic aggregators, and plotting scripts live in the submission evidence
 bundle.
 
+## Held Public-Auto Reproduction
+
+Use the CASdatasets repository at the frozen raw-data commit:
+
+```bash
+git clone https://github.com/dutangc/CASdatasets <path/to/CASdatasets>
+git -C <path/to/CASdatasets> checkout 227fb56b8734bdb7c0327a41180e01d2ddaeaf26
+```
+
+Install the exact held-run Python environment:
+
+```bash
+python -m pip install -r fairness/public_auto_requirements.txt
+```
+
+Generate the held public-auto candidate logs and provenance:
+
+```bash
+python fairness/public_auto_repro_run.py \
+  --raw-repo <path/to/CASdatasets>
+```
+
+Verify the generated provenance, frozen splits, model replay, policy flags, and
+output hashes:
+
+```bash
+python fairness/verify_public_auto_repro.py \
+  --raw-repo <path/to/CASdatasets>
+```
+
+Outputs are written under `outputs/public_auto_repro/`, which is intentionally
+ignored by Git.
+
 ## CASdatasets Inputs
 
 Convert each CASdatasets `.rda` file to CSV:

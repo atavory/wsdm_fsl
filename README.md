@@ -12,6 +12,13 @@ The package includes:
   CSV without requiring an R runtime.
 - `fairness/fairness_candidates.py`: generates candidate-level fairness logs for Australian
   MTPL, Belgian MTPL, and KuaiRand-Pure.
+- `fairness/public_group_candidates.py`: current group-bearing candidate runner
+  for the public fairness datasets.
+- `fairness/public_auto_repro_run.py` and
+  `fairness/verify_public_auto_repro.py`: frozen held public-auto reproduction
+  and verification scripts with source, split, model, and output provenance.
+- `docs/code_algorithm_audit_20261010.md`: the implementation-to-algorithm audit
+  that resolved the group-price denominator wording discrepancy.
 
 Supply local copies of the public datasets when running the scripts.
 
@@ -19,6 +26,9 @@ Supply local copies of the public datasets when running the scripts.
 
 - Australian MTPL: `ausprivauto0405.rda` from CASdatasets.
 - Belgian MTPL: `beMTPL97.rda` from CASdatasets.
+- Held public-auto reproduction: CASdatasets at commit
+  `227fb56b8734bdb7c0327a41180e01d2ddaeaf26`, using `beMTPL97`,
+  `freMPL1`--`freMPL9`, `norauto`, and `swmotorcycle`.
 - KuaiRand-Pure: the extracted `data` directory containing
   `log_random_4_22_to_5_08_pure.csv`, `user_features_pure.csv`, and
   `video_features_basic_pure.csv`.
@@ -31,6 +41,13 @@ Install the public dependencies:
 python3 -m venv .venv
 . .venv/bin/activate
 python -m pip install -r requirements.txt
+```
+
+For the exact held public-auto reproduction, install the pinned runner
+environment instead:
+
+```bash
+python -m pip install -r fairness/public_auto_requirements.txt
 ```
 
 ## Run
@@ -58,6 +75,15 @@ python fairness/fairness_candidates.py \
   --epochs 20 \
   --targets 0.1 \
   --output <output-dir>/australian_candidates.csv
+```
+
+Run the frozen held public-auto reproduction:
+
+```bash
+git clone https://github.com/dutangc/CASdatasets <path/to/CASdatasets>
+git -C <path/to/CASdatasets> checkout 227fb56b8734bdb7c0327a41180e01d2ddaeaf26
+python fairness/public_auto_repro_run.py --raw-repo <path/to/CASdatasets>
+python fairness/verify_public_auto_repro.py --raw-repo <path/to/CASdatasets>
 ```
 
 See `fairness/RUN_COMMANDS.md` for Belgian MTPL and KuaiRand examples.  Save the Git
