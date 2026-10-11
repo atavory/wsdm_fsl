@@ -31,6 +31,15 @@ complaint construction. That does not estimate the raw conditional means used
 by the population theory. The repaired public runners now fit raw-scale linear
 mean regressions with nonnegative prediction clipping.
 
+A later 2026-10-11 data-side audit found a second aggregation mismatch: the
+promoted public-auto group-policy bank used W-BCE for the fixed
+baseline/reference but a separate loss-regression plug-in ratio for the direct
+price sweep. The evidence bundle was regenerated with `--base-score wbce`, so
+the promoted public-auto direct group/account policies now use the W-BCE-implied
+loss side, `estimated_value * exp(clip(wbce_logit, -50, 50))`. This public
+mirror does not ship the private aggregation scripts or generated CSVs; it
+records the verified evidence-bundle state.
+
 ## Implementation Map
 
 Score construction:
@@ -87,13 +96,16 @@ Comparator LP:
 
 The denominator wording error is fixed in the paper. The auxiliary log-proxy
 mismatch required a rerun and has been repaired in the evidence bundle. The
-selected-policy mass accounting gate is also closed in the evidence bundle:
-2,484/2,484 value-unit selected policies now have exact repaired mass rows.
+promoted public-auto scorer mismatch was also repaired by uniform W-BCE
+regeneration. The selected-policy mass accounting gate is closed in the
+evidence bundle: 2,880/2,880 value-unit selected policies now have exact
+repaired mass rows.
 
-The current paper headline after the raw-scale repair is median lift `+0.5010`,
-source signs `7/0/0`, and two-sided cluster p-value `0.008106` at the primary
-`.95` floor. The previous budget-repaired headline was `+0.6131` with signs
-`6/0/1`; the repair makes the effect smaller but directionally cleaner.
+The current paper headline after the uniform W-BCE regeneration is median lift
+`+0.5447`, source signs `6/0/1`, and two-sided cluster p-value `0.002938` at the
+primary `.95` floor. The previous raw-scale but mixed-scorer headline was
+`+0.5010` with signs `7/0/0`; the uniform regeneration increases the median
+lift and restores the full 180 paired cells.
 
 ## Accepted method and verification boundary
 
@@ -103,14 +115,19 @@ projected to zero; value proxies used in ratios have a 1e-9 numerical floor.
 This does not assert exact conditional-mean recovery by a finite linear model.
 The separate log-damped score-learning robustness comparison is unaffected.
 
-Current eligibility is 149 paired cells, versus 180 before the repair. Therefore
-+0.6131 to +0.5010 is not a prediction-only change on an identical sample.
-The exact seven-source sign-flip p is 0.0078125 one-sided and 0.015625 two-sided.
-Independent Mac replay passed for 120 splits / 360 models / 1,335,600 rows;
-headline verification checked 3891 selection rows, LP verification checked
-920 cells, and 14 tests passed. Paper generated tables match the data.
+The raw-proxy repair changed eligibility to 149 paired cells, versus 180 before
+that repair, so +0.6131 to +0.5010 was not a prediction-only change on an
+identical sample. The later uniform-W-BCE regeneration restores 180 paired
+seven-source cells. The exact seven-source sign-flip p is 0.015625 one-sided and
+0.03125 two-sided. Independent data-side headline verification checked 5,028
+selection rows, LP verification checked 920 cells with no failures, zero-price
+identity checked 360 public-auto lambda-zero pairs with no mismatches, and the
+submission artifact tests pass 16 tests.
 
-Selected-policy objection-mass records are now complete: 2,484/2,484
+Selected-policy objection-mass records are now complete: 2,880/2,880
 value-unit selected policies have exact repaired mass rows and zero validation
-budget violations. Final Overleaf rendering and the full review harness remain
+budget violations. Data/evidence commits
+`e5eb6240f4f1e5767f04d6845675a1befa625787` and
+`663525698be943068c6ee90393173347f21ecbce` record the regeneration and
+provenance update. Final Overleaf rendering and the full review harness remain
 pending. Previous all-PASS or old-PDF reports do not certify the current paper.

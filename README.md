@@ -37,17 +37,19 @@ This replaces the earlier log1p-target auxiliary regressions. Main raw W-BCE
 training was already correct. The separately labelled log-damped W-BCE
 score-learning robustness comparison remains distinct.
 
-The regenerated seven-source comparison at the `.95` validation capture floor
-has median held-out closure lift +0.5010, source signs 7/0/0, and two-sided
-source-cluster p=0.008106 over 149 eligible paired cells. The previous +0.6131
-result used 180 cells and superseded log proxies; the eligibility change is
-part of the old/new comparison. Fixed block-count and blocked-value parity
-comparisons are mixed, so these numbers do not support dominance over every
-parity baseline. See [the audit](docs/code_algorithm_audit_20261010.md).
+The current seven-source comparison at the `.95` validation capture floor has
+median held-out closure lift +0.5447, source signs 6/0/1, and two-sided
+source-cluster p=0.002938 over 180 paired cells. This follows the 2026-10-11
+evidence-bundle regeneration that uses the W-BCE-implied loss side for the
+promoted public-auto group-policy bank, replacing the temporary mixed scorer
+state whose headline was +0.5010 over 149 cells. Fixed block-count and
+blocked-value parity comparisons are mixed, so these numbers do not support
+dominance over every parity baseline. See
+[the audit](docs/code_algorithm_audit_20261010.md).
 
 Independent replay checked 120 splits, 360 saved models and 1,335,600 candidate
 rows against raw inputs in the evidence bundle. Exact objection-mass reporting
-is now complete for 2,484/2,484 value-unit selected policies; final paper
+is now complete for 2,880/2,880 value-unit selected policies; final paper
 rendering/review remain unfinished.
 
 ## Inputs
