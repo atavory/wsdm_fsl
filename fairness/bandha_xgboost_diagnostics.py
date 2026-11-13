@@ -106,7 +106,7 @@ def freeze_bank(array, case, normalized):
             baseline if baseline["capture"] > 0 else {**baseline, "capture": 1.0},
             0.95 if baseline["capture"] > 0 else 0.0,
         ),
-        "zero_validation_baseline_capture": baseline["capture"] == 0,
+        "zero_validation_baseline_capture": bool(baseline["capture"] == 0),
         "coverage": history,
         "axis": axis,
     }
