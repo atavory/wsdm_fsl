@@ -20,6 +20,9 @@ The package includes:
 - `fairness/public_auto_repro_run.py` and
   `fairness/verify_public_auto_repro.py`: frozen held public-auto reproduction
   and verification scripts with source, split, model, and output provenance.
+- `fairness/bandha_external_criteria_study.py`: immutable V/C/T criterion
+  expansion, backfill capacity, and business-reserve comparisons; see
+  [commands and scope](docs/external_criteria_study.md).
 - `docs/code_algorithm_audit_20261010.md`: the implementation-to-algorithm audit
   covering the group-price denominator wording fix and the raw-scale auxiliary
   proxy repair.
