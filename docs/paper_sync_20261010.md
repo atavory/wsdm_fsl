@@ -1,5 +1,8 @@
 # Paper Sync, 2026-10-10
 
+**Current primary:** [complete XGBoost rerun](xgboost_rerun_20261113.md).
+The earlier dated model implementations, studies, and archives below remain historical evidence.
+
 ## Current raw-outcome sync
 
 - Data/evidence state: e039b9119162d2d60cc69968bd0a460df42fdb4e.

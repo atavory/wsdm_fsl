@@ -1,5 +1,8 @@
 # Code-To-Algorithm Audit, 2026-10-10
 
+**Current primary:** [complete XGBoost rerun](xgboost_rerun_20261113.md).
+The earlier dated model implementations, studies, and archives below remain historical evidence.
+
 Scope: paper commit `79514dd5e3d0247cc56d6752ef2e2e1f6059cca6`,
 data-evidence commit `e039b9119162d2d60cc69968bd0a460df42fdb4e`, and the
 public mirror runners under `fairness/`.

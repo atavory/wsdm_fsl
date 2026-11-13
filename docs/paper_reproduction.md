@@ -1,4 +1,7 @@
-# Current corrected arXiv evidence
+# Historical corrected arXiv evidence
+
+**Current primary:** [complete XGBoost rerun](xgboost_rerun_20261113.md).
+The earlier dated model implementations, studies, and archives below remain historical evidence.
 
 Use `artifacts/frozen_normalized_price_evidence_20261012.zip` for the current
 normalized/enlarged group comparison and all ten-source sensitivities. Its

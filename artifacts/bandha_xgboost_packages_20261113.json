@@ -1,0 +1,12 @@
+[
+  {
+    "path": "artifacts/bandha_xgboost_runtime_20261113.zip",
+    "sha256": "ac79e968f039b4bb2e474efb7d5b00c50b0130a923b0e895803ee733bafcfc17",
+    "bytes": 75861
+  },
+  {
+    "path": "artifacts/bandha_xgboost_evidence_20261113.zip",
+    "sha256": "870651bc4717a6628bee9c69055a48fd98cba0732d4af2d6a70e7fb102205a8f",
+    "bytes": 633399
+  }
+]

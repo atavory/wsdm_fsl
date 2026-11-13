@@ -8,6 +8,21 @@ table/figure generators are available in
 [the reproduction archive](artifacts/frozen_paper_evidence_20261011.zip); see
 [the complete commands and artifact map](docs/paper_reproduction.md).
 
+## Current WSDM short-paper primary: XGBoost
+
+The current primary uses boosted trees for the W-BCE baseline and separate
+raw-mean predictors for harm/net harm. All 24 cohorts and ten seeds retain
+the immutable V/C/T memberships. See [results and rerun commands](docs/xgboost_rerun_20261113.md).
+The earlier linear experiments remain historical and sensitivity evidence.
+
+- [Frozen aggregate evidence](artifacts/bandha_xgboost_evidence_20261113.zip)
+  reproduces the current table and scientific summary with Python stdlib.
+- [Exact supporting runtime sources](artifacts/bandha_xgboost_runtime_20261113.zip)
+  complete the dependencies for retraining from the frozen data manifest.
+- `fairness/bandha_xgboost_rerun.py`: train, calibrate, seal, then evaluate.
+- `fairness/bandha_xgboost_diagnostics.py`: V-selected original-test penalties.
+- `fairness/bandha_xgboost_sensitivity.py`: ratio restoration on the same T.
+
 The package includes:
 
 - `score/`: public score-learning runners for the ten yield-Gini datasets.
@@ -15,7 +30,7 @@ The package includes:
   CSV without requiring an R runtime.
 - `fairness/fairness_candidates.py`: generates candidate-level fairness logs for Australian
   MTPL, Belgian MTPL, and KuaiRand-Pure.
-- `fairness/public_group_candidates.py`: current group-bearing candidate runner
+- `fairness/public_group_candidates.py`: historical linear group-bearing candidate runner
   for the public fairness datasets.
 - `fairness/public_auto_repro_run.py` and
   `fairness/verify_public_auto_repro.py`: frozen held public-auto reproduction
@@ -29,9 +44,9 @@ The package includes:
 
 Supply local copies of the public datasets when running the scripts.
 
-## Fairness outcome models
+## Historical linear fairness outcome models
 
-The current fairness runners train W-BCE on raw value and loss. Separate
+The historical linear fairness runners train W-BCE on raw value and loss. Separate
 squared-error linear regressions fit raw value and loss targets for complaint
 construction. Training-only centering and scaling are inverted at prediction;
 negative predicted means are projected to zero, and value proxies used in ratios
@@ -41,7 +56,7 @@ This replaces the earlier log1p-target auxiliary regressions. Main raw W-BCE
 training was already correct. The separately labelled log-damped W-BCE
 score-learning robustness comparison remains distinct.
 
-The current arXiv preparation uses the corrected normalized, enlarged price
+The earlier arXiv preparation used the corrected normalized, enlarged price
 bank in [the 20261012 evidence archive](artifacts/frozen_normalized_price_evidence_20261012.zip).
 At the `.95` validation capture floor, the mean of seven source medians is
 +0.2185 (two-sided source p=0.3071); across all ten recorded sources it is

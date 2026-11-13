@@ -1,5 +1,8 @@
 # Fixed-criterion expansion and backfill capacity
 
+**Current primary:** [complete XGBoost rerun](xgboost_rerun_20261113.md).
+The earlier dated model implementations, studies, and archives below remain historical evidence.
+
 The three `fairness/bandha_external_criteria_*.py` modules evaluate the exact
 primary 24-cohort panel with frozen fractional baseline probabilities and
 immutable V/C/T membership. They need NumPy and SciPy, plus the frozen

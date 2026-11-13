@@ -1,5 +1,10 @@
 # Fairness Runner Commands
 
+## Current boosted primary
+
+See [XGBoost rerun commands and frozen evidence](../docs/xgboost_rerun_20261113.md).
+The commands below reproduce the historical linear candidate pipelines.
+
 The public runner writes candidate-level CSVs.  The paper's frozen CSVs,
 deterministic aggregators, and plotting scripts live in the submission evidence
 bundle.
