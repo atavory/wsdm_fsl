@@ -89,7 +89,7 @@ def results_for_case(data, case, fitted, part):
         if np.min(p) < -1e-9 or np.max(p) > 1 + 1e-9:
             raise ValueError("Invalid probability")
         business = business_metrics(data, p0, p)
-        for name in ("native", "native_wbce", "native_plugin"):
+        for name in ("native", "native_wbce", "native_plugin", "native_joint"):
             q = criterion(data, name, fitted["plugin_threshold"])
             for unit in ("count", "value", "loss"):
                 row = {
@@ -115,7 +115,7 @@ def capacity_for_case(data, case, fitted, part):
     p0, rows = baseline(data, case), []
     total_a, total_b = np.sum(data[:, 2:4], axis=0)
     base_b = np.sum(p0 * data[:, 3])
-    for name in ("native", "native_wbce", "native_plugin"):
+    for name in ("native", "native_wbce", "native_plugin", "native_joint"):
         q = criterion(data, name, fitted["plugin_threshold"])
         h = (~q) * (1 - p0)
         q_capture = float(np.sum(p0 * q * data[:, 3]))
@@ -213,6 +213,10 @@ def test_command(args, manifest):
         or freeze["code_sha256"] != code_hashes()
     ):
         raise ValueError("C-frozen code or inputs changed")
+    if freeze["protocol_sha256"] != digest(args.protocol) or freeze[
+        "C_csv_sha256"
+    ] != digest(args.output / "C.csv"):
+        raise ValueError("C-frozen protocol or results changed")
     decisions = {(r["dataset"], r["seed"]): r["fitted"] for r in freeze["decisions"]}
     evidence = json.loads(args.evidence.read_text())
     cells = {(r["dataset"], str(r["seed"])): r for r in evidence["cell_evidence"]}

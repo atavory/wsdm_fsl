@@ -58,10 +58,10 @@ def upper_hull(moments, thresholds, scales):
     return moments[hull], [thresholds[i] for i in hull]
 
 
-def solve_problem(cost, capture, anchor, qmass, scales, floor, objective):
+def solve_problem(cost, capture, anchor, qmass, scales, floor, objective, cap=0.1):
     cost_row = np.r_[cost, qmass[0]] / scales[0]
     capture_row = np.r_[capture, qmass[1]] / scales[1]
-    rhs = [0.1 - anchor[0] / scales[0], (anchor[1] - floor) / scales[1]]
+    rhs = [cap - anchor[0] / scales[0], (anchor[1] - floor) / scales[1]]
     result = linprog(
         objective,
         A_ub=np.array([cost_row, -capture_row]),
@@ -81,17 +81,19 @@ def solve_problem(cost, capture, anchor, qmass, scales, floor, objective):
     return result
 
 
-def calibrated_weights(moments, anchor, qmass, scales, baseline_capture):
+def calibrated_weights(
+    moments, anchor, qmass, scales, baseline_capture, cap=0.1, rho=0.95
+):
     n = len(moments)
     objective = np.r_[np.zeros(n), 1]
     fitted = solve_problem(
-        *moments.T, anchor, qmass, scales, 0.95 * baseline_capture, objective
+        *moments.T, anchor, qmass, scales, rho * baseline_capture, objective, cap
     )
     status = "feasible"
     if fitted.status == 2:
         status = "capture_infeasible"
         objective = -np.r_[moments[:, 1], qmass[1]] / scales[1]
-        fitted = solve_problem(*moments.T, anchor, qmass, scales, 0, objective)
+        fitted = solve_problem(*moments.T, anchor, qmass, scales, 0, objective, cap)
     if fitted.status == 2:
         return np.r_[1.0, np.zeros(n)], "resource_infeasible"
     weights = np.maximum(fitted.x[:-1], 0)
@@ -99,7 +101,7 @@ def calibrated_weights(moments, anchor, qmass, scales, baseline_capture):
     return np.r_[weights, np.clip(fitted.x[-1], 0, 1)], status
 
 
-def fit_common(v, c, case, name, flexible, plugin):
+def fit_common(v, c, case, name, flexible, plugin, cap=0.1, rho=0.95):
     qv, qc = criterion(v, name, plugin), criterion(c, name, plugin)
     thresholds = bank(v, ~qv, case["baseline_threshold"])
     p0 = baseline(c, case)
@@ -111,7 +113,7 @@ def fit_common(v, c, case, name, flexible, plugin):
     anchor = np.zeros(2) if flexible else np.sum(base_moments[~qc], axis=0)
     qmass = np.sum(base_moments[qc], axis=0)
     weights, status = calibrated_weights(
-        moments, anchor, qmass, scales, np.sum(base_moments[:, 1])
+        moments, anchor, qmass, scales, np.sum(base_moments[:, 1]), cap, rho
     )
     selected = np.flatnonzero(weights[:-1] > 1e-12)
     return {
@@ -124,24 +126,28 @@ def fit_common(v, c, case, name, flexible, plugin):
         "weights": weights[selected].tolist(),
         "V_bank_size": len(bank(v, ~qv, case["baseline_threshold"])),
         "C_hull_size": len(moments),
+        "fitted_value_cap": cap,
+        "fitted_capture_floor": rho,
     }
 
 
-def fit_no_addition(c, case):
+def fit_no_addition(c, case, cap=0.1, rho=0.95):
     q, p0 = criterion(c, "native", 0), baseline(c, case)
     totals = np.sum(p0[:, None] * c[:, 2:4], axis=0)
     qmass = np.sum((p0 * q)[:, None] * c[:, 2:4], axis=0)
     nonq = totals - qmass
-    lower = max(0.0, (0.95 * totals[1] - nonq[1]) / qmass[1]) if qmass[1] > 0 else 0.0
-    cap = 0.1 * np.sum(c[:, 2])
-    upper = min(1.0, (cap - nonq[0]) / qmass[0]) if qmass[0] > 0 else 1.0
-    feasible = nonq[0] <= cap + 1e-9 and lower <= upper + 1e-9
+    lower = max(0.0, (rho * totals[1] - nonq[1]) / qmass[1]) if qmass[1] > 0 else 0.0
+    value_limit = cap * np.sum(c[:, 2])
+    upper = min(1.0, (value_limit - nonq[0]) / qmass[0]) if qmass[0] > 0 else 1.0
+    feasible = nonq[0] <= value_limit + 1e-9 and lower <= upper + 1e-9
     return {
         "mode": "no_addition",
         "criterion": "native",
         "plugin_threshold": 0.0,
         "s": min(lower, max(0.0, upper)),
         "fit_status": "feasible" if feasible else "infeasible",
+        "fitted_value_cap": cap,
+        "fitted_capture_floor": rho,
     }
 
 
@@ -156,8 +162,13 @@ def fit_case(v, c, case):
         "thinning": {"mode": "uniform", "fit_status": "fixed", "s": 0.95},
         "no_addition": fit_no_addition(c, case),
     }
-    for name in ("native", "native_wbce", "native_plugin"):
+    for name in ("native", "native_wbce", "native_plugin", "native_joint"):
         for flexible in (False, True):
             key = ("flexible_" if flexible else "common_") + name
             result[key] = fit_common(v, c, case, name, flexible, plugin)
+    for name in ("native", "native_joint"):
+        result["reserved_" + name] = fit_common(
+            v, c, case, name, False, plugin, 0.095, 0.98
+        )
+    result["no_addition_reserved"] = fit_no_addition(c, case, 0.095, 0.98)
     return {"plugin_threshold": plugin, "policies": result}

@@ -142,6 +142,8 @@ def criterion(data, name, plugin_threshold):
         return q | (data[:, 8] < 0.5)
     if name == "native_plugin":
         return q | (plug_in_score(data) < plugin_threshold)
+    if name == "native_joint":
+        return q | (data[:, 8] < 0.5) | (plug_in_score(data) < plugin_threshold)
     raise ValueError(f"Unknown criterion: {name}")
 
 
