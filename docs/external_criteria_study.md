@@ -41,5 +41,13 @@ controller guarantees pointwise probability nonincrease for any fixed
 external objection indicator. Capture and value targets remain separate
 empirical constraints.
 
+The initial nine-controller study uses runner commit `32b931d`. The
+joint-criterion/fixed-reserve follow-up uses `1ce0186`, the separate
+`bandha_external_criteria_followup_protocol_20261113.md`, and output directory
+`results/csvs/bandha_external_criteria_followup_20261113`. It adds the joint
+union, native/joint common controllers fitted at fixed C targets of 0.095
+value and 0.98 capture, and a no-addition controller with those reserves.
+The original T assessment targets remain 0.10 value and 0.95 capture.
+
 This study follows earlier examination of T and is exploratory. Report
 denominators, cohort counts, fit failures, and T failures explicitly.
