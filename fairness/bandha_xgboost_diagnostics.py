@@ -101,7 +101,12 @@ def freeze_bank(array, case, normalized):
         "selected": {
             family: selected[f"0.95:{family}"] for family in ("account", "group")
         },
-        "lp": normalized.lp_select(bank, baseline, 0.95),
+        "lp": normalized.lp_select(
+            bank,
+            baseline if baseline["capture"] > 0 else {**baseline, "capture": 1.0},
+            0.95 if baseline["capture"] > 0 else 0.0,
+        ),
+        "zero_validation_baseline_capture": baseline["capture"] == 0,
         "coverage": history,
         "axis": axis,
     }
