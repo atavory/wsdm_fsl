@@ -21,7 +21,7 @@ is manuscript Figure 4.
 
 ## Environment and commands
 
-From a clone of https://github.com/atavory/yielding_fairness:
+From a clone of this repository:
 
 ```bash
 mkdir -p paper_reproduction

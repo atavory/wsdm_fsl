@@ -1,7 +1,5 @@
 # Yielding Fairness
 
-Public repository: [atavory/yielding_fairness](https://github.com/atavory/yielding_fairness).
-
 This repository contains public Python runners for the value-weighted blocking
 experiments.  Raw datasets remain external. The frozen paper-result inputs and original
 table/figure generators are available in
