@@ -21,6 +21,15 @@ The earlier linear experiments remain historical and sensitivity evidence.
 - `fairness/bandha_xgboost_diagnostics.py`: V-selected original-test penalties.
 - `fairness/bandha_xgboost_sensitivity.py`: ratio restoration on the same T.
 
+### Constrained-learning reductions comparison
+
+The comparison against a Fairlearn exponentiated-gradient reduction with
+XGBoost cost-sensitive best responses has its own portable receipt,
+[`artifacts/bandha_agarwal_numerical_receipt_20261116.zip`](artifacts/bandha_agarwal_numerical_receipt_20261116.zip).
+It recomputes the cited 34-of-66 result and the 92-cell matched comparison
+from frozen CSVs using only the Python standard library. See
+[the comparison, its scope, and the verifier command](docs/agarwal_comparison.md).
+
 The package includes:
 
 - `score/`: public score-learning runners for the ten yield-Gini datasets.
