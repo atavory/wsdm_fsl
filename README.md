@@ -20,6 +20,13 @@ The earlier linear experiments remain historical and sensitivity evidence.
 - `fairness/bandha_xgboost_rerun.py`: train, calibrate, seal, then evaluate.
 - `fairness/bandha_xgboost_diagnostics.py`: V-selected original-test penalties.
 - `fairness/bandha_xgboost_sensitivity.py`: ratio restoration on the same T.
+- `fairness/bandha_family_clustered_intervals.py`: the manuscript's Table 1
+  contrasts clustered at the source family, the independent unit, read
+  straight out of the frozen evidence archive with Python stdlib only. The
+  240 cells are 24 settings under ten seeds over ten families, so they are
+  not 240 independent observations; the script prints the clustered interval
+  beside the naive paired-cell standard error and aborts if either quoted
+  contrast fails to reproduce.
 
 ### Constrained-learning reductions comparison
 
@@ -65,12 +72,16 @@ score-learning robustness comparison remains distinct.
 
 The earlier arXiv preparation used the corrected normalized, enlarged price
 bank in [the 20261012 evidence archive](artifacts/frozen_normalized_price_evidence_20261012.zip).
-At the `.95` validation capture floor, the mean of seven source medians is
-+0.2185 (two-sided source p=0.3071); across all ten recorded sources it is
-+0.0863 (p=0.6007). These comparisons do **not** establish statistically
-significant average group-aware superiority. An independent wider global grid gives ten-source mean +0.0202 (p=0.8990),
-with the same conclusion. Historical stronger results used a truncated bank
-with different effective price units.
+Under that bank, at the `.95` validation capture floor, the mean of seven
+source medians is +0.2185 (two-sided source p=0.3071), across all ten recorded
+sources +0.0863 (p=0.6007), and on an independent wider global grid +0.0202
+over ten sources (p=0.8990). These are source-average contrasts on the
+superseded linear bank, kept here for provenance. The current evidence is the
+complete XGBoost rerun described in
+[`docs/xgboost_rerun_20261113.md`](docs/xgboost_rerun_20261113.md), whose
+contrasts are clustered at the source family by
+`fairness/bandha_family_clustered_intervals.py`. Historical stronger results
+used a truncated bank with different effective price units.
 
 The new archive retains every original physical policy, all recorded sources,
 three measurement units, validation coverage traces and frozen LP weights.

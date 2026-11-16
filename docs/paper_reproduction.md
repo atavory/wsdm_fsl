@@ -3,11 +3,13 @@
 **Current primary:** [complete XGBoost rerun](xgboost_rerun_20261113.md).
 The earlier dated model implementations, studies, and archives below remain historical evidence.
 
-Use `artifacts/frozen_normalized_price_evidence_20261012.zip` for the current
-normalized/enlarged group comparison and all ten-source sensitivities. Its
-README gives independent LP verification and table-generation commands.
-The corrected results are not statistically significant on source-average
-comparisons. The 20261011 archive and commands below are historical evidence,
+Use `artifacts/frozen_normalized_price_evidence_20261012.zip` for the
+superseded normalized/enlarged group comparison and its ten-source
+sensitivities. Its README gives independent LP verification and
+table-generation commands. Those source-average contrasts describe the linear
+bank and are kept for provenance; the current bundle's own source-median lift
+is recorded at the foot of this file.
+The 20261011 archive and commands below are historical evidence,
 including the unchanged score-learning and descriptive account-frontier figures.
 
 # Paper table and figure reproduction
