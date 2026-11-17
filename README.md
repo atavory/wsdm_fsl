@@ -30,6 +30,13 @@ The earlier linear experiments remain historical and sensitivity evidence.
 
 ### Constrained-learning reductions comparison
 
+The [completed direct-level follow-up](docs/bandha_complete_levels_20261117.md)
+includes both original objectives, with a separate
+[portable numerical receipt](artifacts/bandha_complete_levels_receipt_20261117.zip)
+and [exact experiment sources](artifacts/bandha_complete_levels_runtime_20261117.zip).
+Its value-objective continuation followed examination of capture results;
+the evidence preserves that timing and every resource failure.
+
 The comparison against a Fairlearn exponentiated-gradient reduction with
 XGBoost cost-sensitive best responses has its own portable receipt,
 [`artifacts/bandha_agarwal_numerical_receipt_20261116.zip`](artifacts/bandha_agarwal_numerical_receipt_20261116.zip).
