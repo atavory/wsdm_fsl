@@ -8,6 +8,12 @@ table/figure generators are available in
 
 ## Current WSDM short-paper primary: XGBoost
 
+The [completed cap and floor replay](docs/bandha_contraction_sweep_20261117.md)
+evaluates all nine combinations of 5/10/20% value caps and .90/.95/.99
+capture floors on the 240 original cases, with no model training. Its
+[portable receipt](artifacts/bandha_contraction_sweep_receipt_20261117.zip)
+retains every failure and reproduces the full result using Python stdlib.
+
 The current primary uses boosted trees for the W-BCE baseline and separate
 raw-mean predictors for harm/net harm. All 24 cohorts and ten seeds retain
 the immutable V/C/T memberships. See [results and rerun commands](docs/xgboost_rerun_20261113.md).

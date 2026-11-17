@@ -1,5 +1,16 @@
 # Contraction cap and capture-floor replay
 
+Both sweeps are complete: all nine combinations and all 240 cases reached
+T evaluation. The original 10%/.95 outcomes reproduce exactly.
+
+- [Portable numerical receipt](../artifacts/bandha_contraction_sweep_receipt_20261117.zip).
+- [Exact replay sources](../artifacts/bandha_contraction_sweep_runtime_20261117.zip).
+
+Extract the receipt and run its README command with Python 3.12+ stdlib.
+It regenerates the full grid, source-family intervals, baseline curve,
+per-cell capture bounds and the additional pre-T slope check. Every
+feasibility failure remains in the result.
+
 We replay the frozen XGBoost primary over beta in `(0.05, 0.10, 0.20)`
 and rho in `(0.90, 0.95, 0.99)`: all nine combinations and all 240 cases.
 We train no model. We compare common contraction with uniform rho thinning.
@@ -39,3 +50,11 @@ The full grid includes baseline capture as a fraction of total loss,
 realized baseline value spend, removal, retained capture, target attainment,
 and C feasibility. Source-family summaries keep seeds within their source
 family, as in the original primary.
+
+The removal advantage persists across the grid; business-target attainment
+remains limited. For the headroom interpretation, requested-rho bounds
+apply only when the case meets that floor and has positive objected capture.
+The extra pre-T 1/sigma fitted-slope prediction fails on many valid cases.
+The capture inequality itself remains valid: the value constraint couples
+replacement to retention, so an upper-bound derivative does not constrain
+the fitted optimum's slope.
