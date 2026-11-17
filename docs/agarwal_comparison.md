@@ -32,7 +32,11 @@ original-training protocol.
 
 Calibrated EG meets its own T gap bound in 125 of 240 cells and the value cap
 in 117. Sixty-six cells meet both, and **34 of those 66 raise a group's
-value-objection level**. This is the figure the paper cites.
+value-objection level**. The paper does not quote this figure. Its "66 cells
+meeting both targets and every known bound", of which 37 show an increase
+under baseline-support refinement, is a different quantity from a different
+run: the direct-levels value arm recorded in
+`bandha_complete_levels_20261117.md`. The two 66s coincide by accident.
 
 On the 92 cells where both the contraction policy and calibrated EG satisfy
 the value cap, with 90 defined removal ratios:
